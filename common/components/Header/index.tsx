@@ -130,8 +130,10 @@ class Header extends Component<Props, State> {
   }
 
   public changeLanguage = (value: string) => {
+    const { languageSelection } = this.props;
     const key = getKeyByValue(languages, value);
-    if (key) {
+
+    if (key && key !== languageSelection) {
       this.props.changeLanguage(key);
     }
   };
