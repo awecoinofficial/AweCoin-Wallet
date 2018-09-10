@@ -255,7 +255,7 @@
     "ADD_METAMASK": "Connect to MetaMask ",
     "NODE_TITLE": "Set Up Your Custom Node",
     "NODE_SUBTITLE": "To connect to a local node...",
-    "NODE_WARNING": "Your node must be HTTPS in order to connect to it via MyCrypto.com. You can [download the MyCrypto repo & run it locally](https://download.mycrypto.com/) to connect to any node. Or, get free SSL certificate via [LetsEncrypt](https://letsencrypt.org/)",
+    "NODE_WARNING": "Your node must be HTTPS in order to connect to it via MyCrypto.com. You can [download the MyCrypto repo & run it locally](https://download.mycrypto.com/) to connect to any node. Or, get a free SSL certificate via [LetsEncrypt](https://letsencrypt.org/)",
     "NODE_NAME": "Node Name",
     "NODE_PORT": "Node Port",
     "NODE_CTA": "Save & Use Custom Node",

@@ -237,7 +237,7 @@
     "CX_QUICKSEND": "Senden ",
     "NODE_TITLE": "Benutzerdefinierten Knoten einstellen",
     "NODE_SUBTITLE": "Verbinde mit einem lokalem Knoten...",
-    "NODE_WARNING": "Your node must be HTTPS in order to connect to it via MyCrypto.com. You can [download the MyCrypto repo & run it locally](https://download.mycrypto.com/) to connect to any node. Or, get free SSL certificate via [LetsEncrypt](https://letsencrypt.org/)",
+    "NODE_WARNING": "Your node must be HTTPS in order to connect to it via MyCrypto.com. You can [download the MyCrypto repo & run it locally](https://download.mycrypto.com/) to connect to any node. Or, get a free SSL certificate via [LetsEncrypt](https://letsencrypt.org/)",
     "NODE_NAME": "Knotenname",
     "NODE_PORT": "Knotenport",
     "NODE_CTA": "Speicher & Benutze Knoten",
