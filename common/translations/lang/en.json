@@ -681,6 +681,7 @@
     "ONBOARDING_TEXT_26": "Pro-Tip: in order for your funds to be the most secure, we recommend getting a hardware wallet to use with MyCrypto. Here are a few options we love:",
     "ONBOARDING_TEXT_27": "Get a Trezor",
     "ONBOARDING_TEXT_28": "Get a Ledger",
-    "ONBOARDING_TEXT_29": "Need more info before you dive in? See [Support Center]($link)"
+    "ONBOARDING_TEXT_29": "Need more info before you dive in? See [Support Center]($link)",
+    "MORE_INFO": "More info"
   }
 }

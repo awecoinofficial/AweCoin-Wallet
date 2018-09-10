@@ -9,15 +9,17 @@ interface Props {
   link?: string;
   size?: Size;
   className?: string;
+  title?: string;
 }
 
-const Help = ({ size = 'x1', link, className }: Props) => {
+const Help = ({ size = 'x1', link, className, title }: Props) => {
   return (
     <a
       href={link}
       className={`Help Help-${size} ${className}`}
       target="_blank"
       rel="noopener noreferrer"
+      title={title}
     >
       <img src={icon} alt="help" />
     </a>

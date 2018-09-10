@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import translate from 'translations';
+import translate, { translateRaw } from 'translations';
 import { AppState } from 'features/reducers';
 import { configMetaSelectors } from 'features/config';
 import { transactionNetworkActions, transactionNetworkSelectors } from 'features/transaction';
@@ -46,6 +46,7 @@ class NonceField extends React.Component<Props> {
                   <Help
                     size="x1"
                     link="https://support.mycrypto.com/transactions/what-is-nonce.html"
+                    title={translateRaw('MORE_INFO')}
                   />
                 </div>
                 <Input
