@@ -9,7 +9,8 @@ import { stripHexPrefixAndLower } from 'libs/formatters';
 import { showPinPrompt } from '../views/pin';
 import { showPassphrasePrompt } from '../views/passphrase';
 
-const deviceList = new DeviceList({ debug: false });
+import config from './constants';
+const deviceList = new DeviceList({ config });
 
 // Keep session in memory so that we're not constantly re-acquiring
 // Null it out if session is grabbed somewhere else first
