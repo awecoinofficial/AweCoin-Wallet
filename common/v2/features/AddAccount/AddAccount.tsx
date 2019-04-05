@@ -54,6 +54,8 @@ import backArrow from 'common/assets/images/icn-back-arrow.svg';
 
 //import styled from 'styled-components';
 import { NetworkOptionsContext } from 'v2/providers';
+import { Formik, FieldProps, Field } from 'formik';
+import { fieldsReducer } from 'features/transaction/fields/reducer';
 //import { fieldsReducer } from 'features/transaction/fields/reducer';
 
 interface OwnProps {
@@ -79,6 +81,12 @@ interface StateProps {
   accessMessage: ReturnType<typeof walletSelectors.getWalletAccessMessage>;
 }
 
+interface PassedState {
+  address: string;
+  network: string;
+  label: string;
+}
+
 type Props = OwnProps & StateProps & DispatchProps & RouteComponentProps<{}>;
 
 type UnlockParams = {} | PrivateKeyValue;
@@ -87,6 +95,7 @@ interface State {
   isInsecureOverridden: boolean;
   value: UnlockParams | null;
   hasSelectedNetwork: boolean;
+  data: PassedState;
 }
 
 interface BaseWalletInfo {
@@ -111,6 +120,12 @@ export interface InsecureWalletInfo extends BaseWalletInfo {
 
 export interface MiscWalletInfo extends BaseWalletInfo {
   description: string;
+}
+
+export interface AddAccountData {
+  address: string;
+  network: string;
+  label: string;
 }
 
 type HardwareWallets = { [key in HardwareWalletName]: SecureWalletInfo };
@@ -226,7 +241,12 @@ const WalletDecrypt = withRouter<Props>(
       selectedWalletKey: null,
       isInsecureOverridden: false,
       value: null,
-      hasSelectedNetwork: false
+      hasSelectedNetwork: false,
+      data: {
+        network: '',
+        address: '',
+        label: ''
+      }
     };
 
     public exists: boolean = true;
@@ -308,26 +328,36 @@ const WalletDecrypt = withRouter<Props>(
                 onError={this.clearWalletChoice}
                 shouldCatch={selectedWallet.lid === this.WALLETS.paritySigner.lid}
               >
-                <selectedWallet.component
-                  value={this.state.value}
-                  onChange={this.onChange}
-                  onUnlock={(value: any) => {
-                    if (selectedWallet.redirect) {
-                      this.props.history.push(selectedWallet.redirect);
-                    }
-                    this.onUnlock(value);
+                <Field
+                  name=""
+                  render={({ field, form }: FieldProps<AddAccountData>) => {
+                    return (
+                      <selectedWallet.component
+                        value={field.value}
+                        onChange={({ target: { value } }: any) => {
+                          console.log('form2: ' + JSON.stringify(form, null, 2));
+                          form.setFieldValue(field.name, value);
+                        }}
+                        onUnlock={(value: any) => {
+                          if (selectedWallet.redirect) {
+                            this.props.history.push(selectedWallet.redirect);
+                          }
+                          this.onUnlock(value);
+                        }}
+                        showNotification={this.props.showNotification}
+                        isWalletPending={
+                          this.state.selectedWalletKey === InsecureWalletName.KEYSTORE_FILE
+                            ? this.props.isWalletPending
+                            : undefined
+                        }
+                        isPasswordPending={
+                          this.state.selectedWalletKey === InsecureWalletName.KEYSTORE_FILE
+                            ? this.props.isPasswordPending
+                            : undefined
+                        }
+                      />
+                    );
                   }}
-                  showNotification={this.props.showNotification}
-                  isWalletPending={
-                    this.state.selectedWalletKey === InsecureWalletName.KEYSTORE_FILE
-                      ? this.props.isWalletPending
-                      : undefined
-                  }
-                  isPasswordPending={
-                    this.state.selectedWalletKey === InsecureWalletName.KEYSTORE_FILE
-                      ? this.props.isPasswordPending
-                      : undefined
-                  }
                 />
               </Errorable>
             </section>
@@ -440,11 +470,20 @@ const WalletDecrypt = withRouter<Props>(
                   networkNames.push(en.name);
                 });
                 return (
-                  <ComboBox
-                    className="Panel-dropdown"
-                    items={new Set(networkNames.sort())}
-                    onChange={this.onChange}
-                    placeholder="Ethereum"
+                  <Field
+                    name="network"
+                    render={({ field, form }: FieldProps<AddAccountData>) => (
+                      <ComboBox
+                        value={field.value}
+                        className="Panel-dropdown"
+                        items={new Set(networkNames.sort())}
+                        onChange={({ target: { value } }) => {
+                          console.log('form: ' + JSON.stringify(form, null, 2));
+                          form.setFieldValue(field.name, value);
+                        }}
+                        placeholder="Ethereum"
+                      />
+                    )}
                   />
                 );
               }}
@@ -458,7 +497,7 @@ const WalletDecrypt = withRouter<Props>(
     }
 
     public handleNetworkSelect = (e: any) => {
-      console.log('[handleNetworkSelect] ' + e.value);
+      console.log(e);
       this.setState({ hasSelectedNetwork: true });
     };
 
@@ -509,52 +548,75 @@ const WalletDecrypt = withRouter<Props>(
       const selectedWallet = this.getSelectedWallet();
       const decryptionComponent = this.getDecryptionComponent();
       const selectNetworkComponent = this.selectNetworkComponent();
-      console.log('[render]', this.state.hasSelectedNetwork);
-
+      console.log('[render]', JSON.stringify(this.state, null, 2));
+      const transaction = {
+        network: '',
+        label: 'bleh',
+        address: ''
+      };
       let componentToRender: JSX.Element;
-
-      if (!hidden && decryptionComponent && selectedWallet && !this.state.hasSelectedNetwork) {
-        componentToRender = (
-          <>
-            <Layout centered={true}>
-              <TransitionGroup>
-                <CSSTransition classNames="DecryptContent" timeout={500} key="decrypt">
-                  {selectNetworkComponent}
-                </CSSTransition>
-              </TransitionGroup>
-            </Layout>
-          </>
-        );
-      } else if (!hidden && decryptionComponent && selectedWallet) {
-        componentToRender = (
-          <Layout centered={true}>
-            <div className="ConnectDevicePanel">
-              <TransitionGroup>
-                <CSSTransition classNames="DecryptContent" timeout={500} key="decrypt">
-                  {decryptionComponent}
-                </CSSTransition>
-              </TransitionGroup>
-            </div>
-          </Layout>
-        );
-      } else {
-        componentToRender = (
-          <Layout centered={true}>
-            <div className="WalletDecrypt">
-              <TransitionGroup>
-                <CSSTransition classNames="DecryptContent" timeout={500} key="wallets">
-                  {this.buildWalletOptions()}
-                </CSSTransition>
-              </TransitionGroup>
-            </div>
-          </Layout>
-        );
-      }
-      return componentToRender;
+      return (
+        <Formik
+          initialValues={transaction}
+          onSubmit={values => {
+            console.log(values);
+          }}
+          render={({ setFieldValue }) => {
+            if (
+              !hidden &&
+              decryptionComponent &&
+              selectedWallet &&
+              !this.state.hasSelectedNetwork &&
+              !this.state.data.network
+            ) {
+              componentToRender = (
+                <>
+                  <Layout centered={true}>
+                    <TransitionGroup>
+                      <CSSTransition classNames="DecryptContent" timeout={500} key="decrypt">
+                        {selectNetworkComponent}
+                      </CSSTransition>
+                    </TransitionGroup>
+                  </Layout>
+                </>
+              );
+            } else if (
+              !hidden &&
+              decryptionComponent &&
+              selectedWallet &&
+              !this.state.data.address
+            ) {
+              componentToRender = (
+                <Layout centered={true}>
+                  <div className="ConnectDevicePanel">
+                    <TransitionGroup>
+                      <CSSTransition classNames="DecryptContent" timeout={500} key="decrypt">
+                        {decryptionComponent}
+                      </CSSTransition>
+                    </TransitionGroup>
+                  </div>
+                </Layout>
+              );
+            } else {
+              componentToRender = (
+                <Layout centered={true}>
+                  <div className="WalletDecrypt">
+                    <TransitionGroup>
+                      <CSSTransition classNames="DecryptContent" timeout={500} key="wallets">
+                        {this.buildWalletOptions()}
+                      </CSSTransition>
+                    </TransitionGroup>
+                  </div>
+                </Layout>
+              );
+            }
+            return componentToRender;
+          }}
+        />
+      );
     }
 
     public onChange = (value: UnlockParams) => {
-      console.log('got here: ' + value);
       this.setState({ value });
     };
 
@@ -568,8 +630,11 @@ const WalletDecrypt = withRouter<Props>(
       // this.state.value will remain unpopulated. in this case, we can expect
       // the payload to contain the unlocked wallet info.
       const unlockValue = value && !isEmpty(value) ? value : payload;
+      console.log('got unlockValue: ' + unlockValue);
+      //form.setState()
       this.WALLETS[selectedWalletKey].unlock(unlockValue);
-      this.props.resetTransactionRequested();
+      //console.log('form: ' + form)
+      //this.props.resetTransactionRequested();
     };
 
     private isWalletDisabled = (walletKey: WalletName) => {
