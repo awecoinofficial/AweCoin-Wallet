@@ -24,6 +24,13 @@ export const NODE_CONFIGS: { [key in StaticNetworkIds]: RawNodeConfig[] } = {
       type: 'infura',
       service: 'Infura',
       url: 'https://mainnet.infura.io/v3/c02fff6b5daa434d8422b8ece54c7286'
+    },
+    {
+      name: makeNodeName('ETH', 'nodesmith'),
+      type: 'rpc',
+      service: 'Nodesmith',
+      url:
+        'https://ethereum.api.nodesmith.io/v1/mainnet/jsonrpc?apiKey=29171c8d9e1d4616a6ca8aa544f71696'
     }
   ],
 
