@@ -11,7 +11,7 @@ export const NODE_CONFIGS: { [key in StaticNetworkIds]: RawNodeConfig[] } = {
       name: makeNodeName('ETH', 'mycrypto'),
       type: 'rpc',
       service: 'MyCrypto',
-      url: 'https://api.mycryptoapi.com/eth'
+      url: 'https://16eg3oeoc1.execute-api.us-east-1.amazonaws.com/beta/eth'
     },
     {
       name: makeNodeName('ETH', 'ethscan'),
