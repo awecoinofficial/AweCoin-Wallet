@@ -1,5 +1,10 @@
 [
   {
+    "address": "0xfa0f26d2334764cE9f9582d8aD0514B5712589cf",
+    "symbol": "AWE",
+    "decimal": 0
+  },
+  {
     "address": "0x4E84E9e5fb0A972628Cf4568c403167EF1D40431",
     "symbol": "$FFC",
     "decimal": 18
